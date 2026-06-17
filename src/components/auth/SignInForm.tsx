@@ -15,67 +15,63 @@ export default function SignInForm() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-
+const [errors, setErrors] = useState({});
   // ✅ EMAIL VALIDATION
   const isValidEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+const handleLogin = async (e) => {
+  e.preventDefault();
 
-    // ================= VALIDATION =================
+  let newErrors = {};
 
-    if (!email) {
-      toast.error("Email is required");
-      return;
+  // Validation
+  if (!email) {
+    newErrors.email = "Email is required";
+  } else if (!isValidEmail(email)) {
+    newErrors.email = "Invalid email format";
+  }
+
+  if (!password) {
+    newErrors.password = "Password is required";
+  } else if (password.length < 6) {
+    newErrors.password = "Password must be at least 6 characters";
+  }
+
+  // Show validation errors below fields
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return;
+  }
+
+  setErrors({});
+  setLoading(true);
+
+  try {
+    const res = await loginUser({ email, password });
+
+    toast.success(res.data.message || "Login successful");
+
+    navigate("/otp", {
+      state: { email },
+    });
+  } catch (err) {
+    const msg = err.response?.data?.message?.toLowerCase();
+
+    if (msg?.includes("user not found")) {
+      toast.error("Email not found");
+    } else if (msg?.includes("password")) {
+      toast.error("Password not match");
+    } else if (msg?.includes("invalid credentials")) {
+      toast.error("Invalid email or password");
+    } else {
+      toast.error(err.response?.data?.message || "Login failed");
     }
-
-    if (!isValidEmail(email)) {
-      toast.error("Invalid email format");
-      return;
-    }
-
-    if (!password) {
-      toast.error("Password is required");
-      return;
-    }
-
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const res = await loginUser({ email, password });
-
-      toast.success(res.data.message || "OTP sent successfully");
-
-      navigate("/verify-otp", { state: { email } });
-
-    } catch (err) {
-      const msg = err.response?.data?.message;
-
-      // ================= SMART ERROR HANDLING =================
-      if (msg?.toLowerCase().includes("email")) {
-        toast.error("Email not found");
-      } 
-      else if (msg?.toLowerCase().includes("password")) {
-        toast.error("Password not match");
-      } 
-      else if (msg?.toLowerCase().includes("invalid credentials")) {
-        toast.error("Invalid email or password");
-      } 
-      else {
-        toast.error(msg || "Login failed");
-      }
-    }
-
+  } finally {
     setLoading(false);
-  };
-
+  }
+};
   return (
     <div className="flex flex-col flex-1">
 
@@ -99,27 +95,42 @@ export default function SignInForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="info@gmail.com"
               />
+              {errors.email && (
+    <p className="mt-1 text-sm text-red-500">
+      {errors.email}
+    </p>
+  )}
             </div>
 
             {/* PASSWORD */}
             <div>
-              <Label>Password *</Label>
-              <div className="relative">
-                <Input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter password"
-                />
+  <Label>Password *</Label>
 
-                <span
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
-                >
-                  {showPassword ? <EyeIcon /> : <EyeCloseIcon />}
-                </span>
-              </div>
-            </div>
+  <div className="relative">
+    <Input
+      type={showPassword ? "text" : "password"}
+      value={password}
+      onChange={(e) => {
+        setPassword(e.target.value);
+        setErrors({ ...errors, password: "" });
+      }}
+      placeholder="Enter password"
+    />
+
+    <span
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
+    >
+      {showPassword ? <EyeIcon /> : <EyeCloseIcon />}
+    </span>
+  </div>
+
+  {errors.password && (
+    <p className="mt-1 text-sm text-red-500">
+      {errors.password}
+    </p>
+  )}
+</div>
 
             <Button className="w-full" disabled={loading}>
               {loading ? "Logging in..." : "Sign In"}
