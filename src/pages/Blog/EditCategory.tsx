@@ -26,9 +26,9 @@ const [formData, setFormData] = useState<{
     categoryName: "",
   });
 
-  useEffect(() => {
-    fetchCategory();
-  }, []);
+useEffect(() => {
+  fetchCategory();
+}, [id]);
 
   const fetchCategory = async () => {
     try {
@@ -69,8 +69,8 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
 
 let newErrors: { categoryName?: string } = {};
 
