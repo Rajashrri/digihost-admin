@@ -4,13 +4,9 @@ import ComponentCard from "../../components/common/ComponentCard";
 import RichTextEditor from "../../components/editor/RichTextEditor";
 import { toast } from "react-toastify";
 
-import {
-  getCategoriesApi,
-} from "../../api/blogCategoryApi";
+import { getCategoriesApi } from "../../api/blogCategoryApi";
 
-import {
-  addBlogApi,
-} from "../../api/blogApi";
+import { addBlogApi } from "../../api/blogApi";
 
 export default function AddBlog() {
   const [categories, setCategories] = useState([]);
@@ -19,6 +15,8 @@ export default function AddBlog() {
     categoryId: "",
     title: "",
     slug: "",
+    author: "",
+    date: "",
     shortDescription: "",
     description: "",
   });
@@ -47,7 +45,7 @@ export default function AddBlog() {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
 
@@ -87,10 +85,15 @@ export default function AddBlog() {
     }
 
     if (!formData.shortDescription.trim()) {
-      newErrors.shortDescription =
-        "Short Description is required";
+      newErrors.shortDescription = "Short Description is required";
+    }
+    if (!formData.author.trim()) {
+      newErrors.author = "Author is required";
     }
 
+    if (!formData.date) {
+      newErrors.date = "Date is required";
+    }
     if (!formData.description.trim()) {
       newErrors.description = "Description is required";
     }
@@ -100,8 +103,7 @@ export default function AddBlog() {
     }
 
     if (!featuredImage) {
-      newErrors.featuredImage =
-        "Featured Image is required";
+      newErrors.featuredImage = "Featured Image is required";
     }
 
     setErrors(newErrors);
@@ -116,12 +118,10 @@ export default function AddBlog() {
       data.append("categoryId", formData.categoryId);
       data.append("title", formData.title);
       data.append("slug", formData.slug);
-      data.append(
-        "shortDescription",
-        formData.shortDescription
-      );
+      data.append("shortDescription", formData.shortDescription);
       data.append("description", formData.description);
-
+      data.append("author", formData.author);
+      data.append("date", formData.date);
       if (mainImage) {
         data.append("mainImage", mainImage);
       }
@@ -139,6 +139,8 @@ export default function AddBlog() {
           categoryId: "",
           title: "",
           slug: "",
+          author: "",
+          date: "",
           shortDescription: "",
           description: "",
         });
@@ -148,10 +150,7 @@ export default function AddBlog() {
         setErrors({});
       }
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.message ||
-          "Something went wrong"
-      );
+      toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -165,7 +164,6 @@ export default function AddBlog() {
             <div className="p-6">
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 gap-6">
-
                   {/* Category */}
                   <div>
                     <label className="mb-1.5 block text-sm font-medium">
@@ -177,20 +175,13 @@ export default function AddBlog() {
                       value={formData.categoryId}
                       onChange={handleChange}
                       className={`h-11 w-full rounded-lg border px-4 ${
-                        errors.categoryId
-                          ? "border-red-500"
-                          : ""
+                        errors.categoryId ? "border-red-500" : ""
                       }`}
                     >
-                      <option value="">
-                        Select Category
-                      </option>
+                      <option value="">Select Category</option>
 
                       {categories.map((item: any) => (
-                        <option
-                          key={item._id}
-                          value={item._id}
-                        >
+                        <option key={item._id} value={item._id}>
                           {item.categoryName}
                         </option>
                       ))}
@@ -216,9 +207,7 @@ export default function AddBlog() {
                       onChange={handleChange}
                       placeholder="Enter blog title"
                       className={`h-11 w-full rounded-lg border px-4 ${
-                        errors.title
-                          ? "border-red-500"
-                          : ""
+                        errors.title ? "border-red-500" : ""
                       }`}
                     />
 
@@ -242,6 +231,90 @@ export default function AddBlog() {
                       onChange={handleChange}
                       className="h-11 w-full rounded-lg border px-4"
                     />
+                  </div>
+                  {/* Author */}
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium">
+                      Author
+                    </label>
+
+                    <input
+                      type="text"
+                      name="author"
+                      value={formData.author}
+                      onChange={handleChange}
+                      placeholder="Enter author name"
+                      className={`h-11 w-full rounded-lg border px-4 ${
+                        errors.author ? "border-red-500" : ""
+                      }`}
+                    />
+
+                    {errors.author && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.author}
+                      </p>
+                    )}
+                  </div>
+                  {/* Date */}
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium">
+                      Publish Date
+                    </label>
+
+                    <input
+                      type="date"
+                      name="date"
+                      value={formData.date}
+                      onChange={handleChange}
+                      className={`h-11 w-full rounded-lg border px-4 ${
+                        errors.date ? "border-red-500" : ""
+                      }`}
+                    />
+
+                    {errors.date && (
+                      <p className="mt-1 text-sm text-red-500">{errors.date}</p>
+                    )}
+                  </div>
+                  {/* Main Image */}
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium">
+                      Main Image
+                    </label>
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) =>
+                        setMainImage(e.target.files?.[0] || null)
+                      }
+                    />
+
+                    {errors.mainImage && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.mainImage}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Featured Image */}
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium">
+                      Featured Image
+                    </label>
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) =>
+                        setFeaturedImage(e.target.files?.[0] || null)
+                      }
+                    />
+
+                    {errors.featuredImage && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.featuredImage}
+                      </p>
+                    )}
                   </div>
 
                   {/* Short Description */}
@@ -270,63 +343,17 @@ export default function AddBlog() {
                     <label className="mb-1.5 block text-sm font-medium">
                       Description
                     </label>
-<RichTextEditor
-  value={formData.description}
-  onChange={(val) =>
-    setFormData({ ...formData, description: val })
-  }
-  height={400}
-/>
+                    <RichTextEditor
+                      value={formData.description}
+                      onChange={(val) =>
+                        setFormData({ ...formData, description: val })
+                      }
+                      height={400}
+                    />
 
                     {errors.description && (
                       <p className="mt-1 text-sm text-red-500">
                         {errors.description}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Main Image */}
-                  <div>
-                    <label className="mb-1.5 block text-sm font-medium">
-                      Main Image
-                    </label>
-
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) =>
-                        setMainImage(
-                          e.target.files?.[0] || null
-                        )
-                      }
-                    />
-
-                    {errors.mainImage && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.mainImage}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Featured Image */}
-                  <div>
-                    <label className="mb-1.5 block text-sm font-medium">
-                      Featured Image
-                    </label>
-
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) =>
-                        setFeaturedImage(
-                          e.target.files?.[0] || null
-                        )
-                      }
-                    />
-
-                    {errors.featuredImage && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.featuredImage}
                       </p>
                     )}
                   </div>
@@ -340,7 +367,6 @@ export default function AddBlog() {
                       Add Blog
                     </button>
                   </div>
-
                 </div>
               </form>
             </div>

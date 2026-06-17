@@ -8,10 +8,7 @@ import { toast } from "react-toastify";
 
 import { getCategoriesApi } from "../../api/blogCategoryApi";
 
-import {
-  getBlogByIdApi,
-  updateBlogApi,
-} from "../../api/blogApi";
+import { getBlogByIdApi, updateBlogApi } from "../../api/blogApi";
 
 export default function EditBlog() {
   const { id } = useParams();
@@ -23,6 +20,8 @@ export default function EditBlog() {
     categoryId: "",
     title: "",
     slug: "",
+    author: "",
+    date: "",
     shortDescription: "",
     description: "",
   });
@@ -31,8 +30,7 @@ export default function EditBlog() {
   const [featuredImage, setFeaturedImage] = useState(null);
 
   const [oldMainImage, setOldMainImage] = useState("");
-  const [oldFeaturedImage, setOldFeaturedImage] =
-    useState("");
+  const [oldFeaturedImage, setOldFeaturedImage] = useState("");
 
   const [errors, setErrors] = useState({});
 
@@ -58,6 +56,8 @@ export default function EditBlog() {
       categoryId: blog.categoryId?._id,
       title: blog.title,
       slug: blog.slug,
+      author: blog.author || "",
+      date: blog.date ? new Date(blog.date).toISOString().split("T")[0] : "",
       shortDescription: blog.shortDescription,
       description: blog.description,
     });
@@ -95,13 +95,12 @@ export default function EditBlog() {
       data.append("categoryId", formData.categoryId);
       data.append("title", formData.title);
       data.append("slug", formData.slug);
-      data.append(
-        "shortDescription",
-        formData.shortDescription
-      );
+      data.append("shortDescription", formData.shortDescription);
       data.append("description", formData.description);
-console.log(mainImage);
-console.log(featuredImage);
+      data.append("author", formData.author);
+      data.append("date", formData.date);
+      console.log(mainImage);
+      console.log(featuredImage);
       if (mainImage) {
         data.append("mainImage", mainImage);
       }
@@ -132,7 +131,6 @@ console.log(featuredImage);
             <div className="p-6">
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 gap-6">
-
                   <div>
                     <label className="mb-1.5 block text-sm font-medium">
                       Blog Category
@@ -144,15 +142,10 @@ console.log(featuredImage);
                       onChange={handleChange}
                       className="h-11 w-full rounded-lg border px-4"
                     >
-                      <option value="">
-                        Select Category
-                      </option>
+                      <option value="">Select Category</option>
 
                       {categories.map((item) => (
-                        <option
-                          key={item._id}
-                          value={item._id}
-                        >
+                        <option key={item._id} value={item._id}>
                           {item.categoryName}
                         </option>
                       ))}
@@ -186,37 +179,33 @@ console.log(featuredImage);
                       className="h-11 w-full rounded-lg border px-4"
                     />
                   </div>
-
                   <div>
                     <label className="mb-1.5 block text-sm font-medium">
-                      Short Description
+                      Author
                     </label>
 
-                    <textarea
-                      rows={3}
-                      name="shortDescription"
-                      value={formData.shortDescription}
+                    <input
+                      type="text"
+                      name="author"
+                      value={formData.author}
                       onChange={handleChange}
-                      className="w-full rounded-lg border px-4 py-3"
+                      className="h-11 w-full rounded-lg border px-4"
+                      placeholder="Enter author name"
                     />
                   </div>
-
                   <div>
                     <label className="mb-1.5 block text-sm font-medium">
-                      Description
+                      Publish Date
                     </label>
-<RichTextEditor
-  value={formData.description}
-  onChange={(val) =>
-    setFormData((prev) => ({
-      ...prev,
-      description: val,
-    }))
-  }
-  height={400}
-/>           
-                  </div>
 
+                    <input
+                      type="date"
+                      name="date"
+                      value={formData.date}
+                      onChange={handleChange}
+                      className="h-11 w-full rounded-lg border px-4"
+                    />
+                  </div>
                   <div>
                     <label className="mb-1.5 block text-sm font-medium">
                       Main Image
@@ -233,11 +222,7 @@ console.log(featuredImage);
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) =>
-                        setMainImage(
-                          e.target.files[0]
-                        )
-                      }
+                      onChange={(e) => setMainImage(e.target.files[0])}
                     />
                   </div>
 
@@ -257,11 +242,36 @@ console.log(featuredImage);
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) =>
-                        setFeaturedImage(
-                          e.target.files[0]
-                        )
+                      onChange={(e) => setFeaturedImage(e.target.files[0])}
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium">
+                      Short Description
+                    </label>
+
+                    <textarea
+                      rows={3}
+                      name="shortDescription"
+                      value={formData.shortDescription}
+                      onChange={handleChange}
+                      className="w-full rounded-lg border px-4 py-3"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium">
+                      Description
+                    </label>
+                    <RichTextEditor
+                      value={formData.description}
+                      onChange={(val) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          description: val,
+                        }))
                       }
+                      height={400}
                     />
                   </div>
 
@@ -281,7 +291,6 @@ console.log(featuredImage);
                       Update Blog
                     </button>
                   </div>
-
                 </div>
               </form>
             </div>
