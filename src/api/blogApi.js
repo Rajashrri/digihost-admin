@@ -41,3 +41,11 @@ export const updateBlogApi = async (id, data) => {
     }
   );
 };
+
+export const getSeoByIdApi = (id) => {
+  return frontApi.get(`/blog-seo/${id}`);
+};
+
+export const updateSeoApi = (id, data) => {
+  return frontApi.put(`/blog-updateseo/${id}`, data);
+};

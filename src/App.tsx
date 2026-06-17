@@ -28,8 +28,9 @@ import BlogCatogery from "./pages/Blog/BlogCatogery";
 import AddCatogery from "./pages/Blog/AddCatogery";
 import AddBlog from "./pages/Blog/AddBlog";
 import EditCategory from "./pages/Blog/EditCategory";
-
 import EditBlog from "./pages/Blog/EditBlog";
+
+import SeoBlog from "./pages/Blog/SeoBlog";
 
 export default function App() {
   return (
@@ -61,6 +62,10 @@ export default function App() {
 <Route
   path="/edit-blog/:id"
   element={<EditBlog />}
+/>
+<Route
+  path="/seo/:id"
+  element={<SeoBlog />}
 />
             {/* Ui Elements */}
             <Route path="/alerts" element={<Alerts />} />

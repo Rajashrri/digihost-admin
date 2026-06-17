@@ -185,6 +185,14 @@ export default function BlogList() {
                             >
                               Delete
                             </button>
+
+
+                             <Link
+                              to={`/seo/${item._id}`}
+                              className="inline-flex items-center rounded-lg bg-blue-500 px-3 py-2 text-sm text-white hover:bg-blue-600"
+                            >
+                              SEO
+                            </Link>
                           </div>
                         </TableCell>
                       </TableRow>
