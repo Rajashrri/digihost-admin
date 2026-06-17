@@ -7,71 +7,76 @@ import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";
 
+type Errors = {
+  email?: string;
+  password?: string;
+};
+
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
+  const [errors, setErrors] = useState<Errors>({});
+
   const navigate = useNavigate();
-const [errors, setErrors] = useState({});
-  // ✅ EMAIL VALIDATION
-  const isValidEmail = (email) => {
+
+  const isValidEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-const handleLogin = async (e) => {
-  e.preventDefault();
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  let newErrors = {};
+    let newErrors: Errors = {};
 
-  // Validation
-  if (!email) {
-    newErrors.email = "Email is required";
-  } else if (!isValidEmail(email)) {
-    newErrors.email = "Invalid email format";
-  }
-
-  if (!password) {
-    newErrors.password = "Password is required";
-  } else if (password.length < 6) {
-    newErrors.password = "Password must be at least 6 characters";
-  }
-
-  // Show validation errors below fields
-  if (Object.keys(newErrors).length > 0) {
-    setErrors(newErrors);
-    return;
-  }
-
-  setErrors({});
-  setLoading(true);
-
-  try {
-    const res = await loginUser({ email, password });
-
-    toast.success(res.data.message || "Login successful");
-
-    navigate("/otp", {
-      state: { email },
-    });
-  } catch (err) {
-    const msg = err.response?.data?.message?.toLowerCase();
-
-    if (msg?.includes("user not found")) {
-      toast.error("Email not found");
-    } else if (msg?.includes("password")) {
-      toast.error("Password not match");
-    } else if (msg?.includes("invalid credentials")) {
-      toast.error("Invalid email or password");
-    } else {
-      toast.error(err.response?.data?.message || "Login failed");
+    if (!email) {
+      newErrors.email = "Email is required";
+    } else if (!isValidEmail(email)) {
+      newErrors.email = "Invalid email format";
     }
-  } finally {
-    setLoading(false);
-  }
-};
+
+    if (!password) {
+      newErrors.password = "Password is required";
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
+    setLoading(true);
+
+    try {
+      const res = await loginUser({ email, password });
+
+      toast.success(res.data.message || "Login successful");
+
+      navigate("/otp", {
+        state: { email },
+      });
+    } catch (err: any) {
+      const msg = err.response?.data?.message?.toLowerCase();
+
+      if (msg?.includes("user not found")) {
+        toast.error("Email not found");
+      } else if (msg?.includes("password")) {
+        toast.error("Password not match");
+      } else if (msg?.includes("invalid credentials")) {
+        toast.error("Invalid email or password");
+      } else {
+        toast.error(err.response?.data?.message || "Login failed");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col flex-1">
 
@@ -92,45 +97,48 @@ const handleLogin = async (e) => {
               <Label>Email *</Label>
               <Input
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setEmail(e.target.value);
+                  setErrors((prev) => ({ ...prev, email: "" }));
+                }}
                 placeholder="info@gmail.com"
               />
               {errors.email && (
-    <p className="mt-1 text-sm text-red-500">
-      {errors.email}
-    </p>
-  )}
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.email}
+                </p>
+              )}
             </div>
 
             {/* PASSWORD */}
             <div>
-  <Label>Password *</Label>
+              <Label>Password *</Label>
 
-  <div className="relative">
-    <Input
-      type={showPassword ? "text" : "password"}
-      value={password}
-      onChange={(e) => {
-        setPassword(e.target.value);
-        setErrors({ ...errors, password: "" });
-      }}
-      placeholder="Enter password"
-    />
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setPassword(e.target.value);
+                    setErrors((prev) => ({ ...prev, password: "" }));
+                  }}
+                  placeholder="Enter password"
+                />
 
-    <span
-      onClick={() => setShowPassword(!showPassword)}
-      className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
-    >
-      {showPassword ? <EyeIcon /> : <EyeCloseIcon />}
-    </span>
-  </div>
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
+                >
+                  {showPassword ? <EyeIcon /> : <EyeCloseIcon />}
+                </span>
+              </div>
 
-  {errors.password && (
-    <p className="mt-1 text-sm text-red-500">
-      {errors.password}
-    </p>
-  )}
-</div>
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.password}
+                </p>
+              )}
+            </div>
 
             <Button className="w-full" disabled={loading}>
               {loading ? "Logging in..." : "Sign In"}

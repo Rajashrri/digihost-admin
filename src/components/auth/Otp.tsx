@@ -5,17 +5,17 @@ import { verifyOtp } from "../../api/authApi";
 import { ChevronLeftIcon } from "../../icons";
 
 export default function Otp() {
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
 
-  const inputRefs = useRef([]);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const location = useLocation();
   const navigate = useNavigate();
 
   const email = location.state?.email;
 
-  const handleChange = (value, index) => {
+  const handleChange = (value: string, index: number) => {
     if (!/^\d*$/.test(value)) return;
 
     const newOtp = [...otp];
@@ -27,13 +27,13 @@ export default function Otp() {
     }
   };
 
-  const handleKeyDown = (e, index) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const otpCode = otp.join("");
@@ -59,20 +59,15 @@ export default function Otp() {
 
       toast.success(res.data.message || "OTP verified successfully");
 
-      // Save auth data
       localStorage.setItem("token", res.data.accessToken);
       localStorage.setItem("refreshToken", res.data.refreshToken);
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(res.data.user)
-      );
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
       navigate("/");
-    } catch (err) {
+    } catch (err: any) {
       toast.error(
-        err.response?.data?.message ||
-          "OTP verification failed"
+        err.response?.data?.message || "OTP verification failed"
       );
     } finally {
       setLoading(false);
@@ -85,7 +80,7 @@ export default function Otp() {
       <div className="w-full max-w-md pt-10 mx-auto">
         <Link
           to="/signin"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700"
+          className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
         >
           <ChevronLeftIcon className="size-5" />
           Back to Login
@@ -110,14 +105,15 @@ export default function Otp() {
 
         <form onSubmit={handleSubmit}>
           <div className="space-y-6">
-            {/* OTP Inputs */}
             <div className="flex justify-between gap-3">
               {otp.map((digit, index) => (
                 <input
                   key={index}
-                  ref={(el) => (inputRefs.current[index] = el)}
+                  ref={(el) => {
+                    inputRefs.current[index] = el;
+                  }}
                   type="text"
-                  maxLength="1"
+                  maxLength={1}
                   value={digit}
                   onChange={(e) =>
                     handleChange(e.target.value, index)
@@ -125,30 +121,25 @@ export default function Otp() {
                   onKeyDown={(e) =>
                     handleKeyDown(e, index)
                   }
-                  className="w-12 h-14 text-xl font-semibold text-center text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-12 h-14 text-xl font-semibold text-center border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500"
                 />
               ))}
             </div>
 
-            {/* Verify Button */}
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-70"
+              className="w-full px-4 py-3 text-white bg-brand-500 rounded-lg hover:bg-brand-600 disabled:opacity-70"
             >
               {loading ? "Verifying..." : "Verify OTP"}
             </button>
           </div>
         </form>
 
-        {/* Resend OTP */}
         <div className="mt-5 text-center">
           <p className="text-sm text-gray-500">
             Didn’t receive code?{" "}
-            <button
-              type="button"
-              className="font-medium text-brand-500 hover:text-brand-600"
-            >
+            <button className="font-medium text-brand-500">
               Resend OTP
             </button>
           </p>
