@@ -3,72 +3,77 @@ import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import ComponentCard from "../../components/common/ComponentCard";
 import { addCategoryApi } from "../../api/blogCategoryApi";
 import { toast } from "react-toastify";
+
 export default function AddCatogery() {
 
+  const [formData, setFormData] = useState<{
+    categoryName: string;
+    slug: string;
+  }>({
+    categoryName: "",
+    slug: "",
+  });
 
-  const [formData, setFormData] = useState<{ categoryName: string }>({
-  categoryName: "",
-});
-const handleChange = (e) => {
-  const { name, value } = e.target;
+  const [errors, setErrors] = useState<{
+    categoryName?: string;
+  }>({});
 
-  if (name === "categoryName") {
-    setFormData({
-      categoryName: value,
-      slug: value
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/[^\w-]+/g, ""),
-    });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
 
-    setErrors({
-      ...errors,
-      categoryName: "",
-    });
-  } else {
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  }
-};
-const [errors, setErrors] = useState({
-  categoryName: "",
-});
- const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  let newErrors = {};
-
-  if (!formData.categoryName.trim()) {
-    newErrors.categoryName = "Category Name is required";
-  }
-
-  setErrors(newErrors);
-
-  if (Object.keys(newErrors).length > 0) {
-    return;
-  }
-
-  try {
-    const response = await addCategoryApi(formData);
-
-    if (response.data.success) {
-      toast.success(response.data.message);
-
+    if (name === "categoryName") {
       setFormData({
-        categoryName: "",
-        slug: "",
+        categoryName: value,
+        slug: value
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^\w-]+/g, ""),
       });
 
-      setErrors({});
+      setErrors((prev) => ({
+        ...prev,
+        categoryName: "",
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
-  } catch (error) {
-    toast.error(
-      error.response?.data?.message || "Something went wrong"
-    );
-  }
-};
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    let newErrors: { categoryName?: string } = {};
+
+    if (!formData.categoryName.trim()) {
+      newErrors.categoryName = "Category Name is required";
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
+
+    try {
+      const response = await addCategoryApi(formData);
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+
+        setFormData({
+          categoryName: "",
+          slug: "",
+        });
+
+        setErrors({});
+      }
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.message || "Something went wrong"
+      );
+    }
+  };
 
   return (
     <>
@@ -81,28 +86,30 @@ const [errors, setErrors] = useState({
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 gap-6">
 
-                <div>
-  <label className="mb-1.5 block text-sm font-medium">
-    Category Name
-  </label>
+                  {/* Category Name */}
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium">
+                      Category Name
+                    </label>
 
-  <input
-    type="text"
-    name="categoryName"
-    value={formData.categoryName}
-    onChange={handleChange}
-    placeholder="Enter category name"
-    className={`h-11 w-full rounded-lg border px-4 ${
-      errors.categoryName ? "border-red-500" : ""
-    }`}
-  />
+                    <input
+                      type="text"
+                      name="categoryName"
+                      value={formData.categoryName}
+                      onChange={handleChange}
+                      placeholder="Enter category name"
+                      className={`h-11 w-full rounded-lg border px-4 ${
+                        errors.categoryName ? "border-red-500" : ""
+                      }`}
+                    />
 
-  {errors.categoryName && (
-    <p className="mt-1 text-sm text-red-500">
-      {errors.categoryName}
-    </p>
-  )}
-</div>
+                    {errors.categoryName && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.categoryName}
+                      </p>
+                    )}
+                  </div>
+
                   {/* Slug */}
                   <div>
                     <label className="mb-1.5 block text-sm font-medium">

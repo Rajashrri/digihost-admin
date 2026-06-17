@@ -15,8 +15,12 @@ export default function EditCategory() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState<{ categoryName: string }>({
+const [formData, setFormData] = useState<{
+  categoryName: string;
+  slug: string;
+}>({
   categoryName: "",
+  slug: "",
 });
   const [errors, setErrors] = useState({
     categoryName: "",
@@ -41,7 +45,7 @@ export default function EditCategory() {
     }
   };
 
-  const handleChange = (e) => {
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     if (name === "categoryName") {
@@ -68,7 +72,7 @@ export default function EditCategory() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let newErrors = {};
+let newErrors: { categoryName?: string } = {};
 
     if (!formData.categoryName.trim()) {
       newErrors.categoryName = "Category Name is required";
