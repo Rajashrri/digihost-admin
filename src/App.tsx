@@ -100,7 +100,7 @@ export default function App() {
         </Routes>
       </Router>
        <ToastContainer
-       ClassName="z-100" 
+       className="z-100" 
 
   position="top-right"
   autoClose={3000}

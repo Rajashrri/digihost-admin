@@ -140,18 +140,7 @@ export default function ContactList() {
                               : item.message}
                           </span>
                         </TableCell>
-<TableCell className="px-5 py-4 text-start">
-  <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-    {new Date(item.createdAt).toLocaleString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    })}
-  </span>
-</TableCell>
+
                       </TableRow>
                     ))
                   ) : (
