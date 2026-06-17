@@ -43,6 +43,14 @@ const navItems: NavItem[] = [
       { name: "List Blog", path: "/blog", pro: false }
     ],
   },
+
+   {
+    name: "List",
+    icon: <TableIcon />,
+    subItems: [
+      { name: "Contact List", path: "/contact-list", pro: false },
+    ],
+  },
  
 ];
 

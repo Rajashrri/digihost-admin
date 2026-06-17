@@ -31,6 +31,10 @@ import EditCategory from "./pages/Blog/EditCategory";
 import EditBlog from "./pages/Blog/EditBlog";
 
 import SeoBlog from "./pages/Blog/SeoBlog";
+import Contact from "./pages/List/contact";
+
+
+
 
 export default function App() {
   return (
@@ -55,6 +59,7 @@ export default function App() {
             <Route path="/add-blog" element={<AddBlog />} />
             <Route path="/blog-catogery" element={<BlogCatogery />} />
             <Route path="/blog" element={<BlogTable />} />
+
 <Route
   path="/edit-category/:id"
   element={<EditCategory />}
@@ -67,6 +72,9 @@ export default function App() {
   path="/seo/:id"
   element={<SeoBlog />}
 />
+
+            <Route path="/contact-list" element={<Contact />} />
+
             {/* Ui Elements */}
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/avatars" element={<Avatars />} />
