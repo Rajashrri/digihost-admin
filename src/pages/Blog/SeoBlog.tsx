@@ -16,14 +16,21 @@ export default function EditSeo() {
 
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    metaTitle: "",
-    metaKeywords: "",
-    metaDescription: "",
-    mainImageAlt: "",
-    featuredImageAlt: "",
-    schemaCode: "",
-  });
+const [formData, setFormData] = useState<{
+  metaTitle: string;
+  metaKeywords: string;
+  metaDescription: string;
+  mainImageAlt: string;
+  featuredImageAlt: string;
+  schemaCode: string;
+}>({
+  metaTitle: "",
+  metaKeywords: "",
+  metaDescription: "",
+  mainImageAlt: "",
+  featuredImageAlt: "",
+  schemaCode: "",
+});
 
   useEffect(() => {
     fetchSeo();

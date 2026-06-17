@@ -15,11 +15,9 @@ export default function EditCategory() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    categoryName: "",
-    slug: "",
-  });
-
+  const [formData, setFormData] = useState<{ categoryName: string }>({
+  categoryName: "",
+});
   const [errors, setErrors] = useState({
     categoryName: "",
   });

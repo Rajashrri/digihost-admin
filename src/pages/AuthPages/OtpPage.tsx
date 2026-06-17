@@ -1,6 +1,6 @@
 import PageMeta from "../../components/common/PageMeta";
 import AuthLayout from "./AuthPageLayout";
-import Otp from "../../components/auth/otp";
+import Otp from "../../components/auth/Otp";
 
 export default function OtpPage() {
   return (

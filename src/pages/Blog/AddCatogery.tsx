@@ -4,10 +4,11 @@ import ComponentCard from "../../components/common/ComponentCard";
 import { addCategoryApi } from "../../api/blogCategoryApi";
 import { toast } from "react-toastify";
 export default function AddCatogery() {
-  const [formData, setFormData] = useState({
-    categoryName: "",
-    slug: "",
-  });
+
+
+  const [formData, setFormData] = useState<{ categoryName: string }>({
+  categoryName: "",
+});
 const handleChange = (e) => {
   const { name, value } = e.target;
 
