@@ -11,33 +11,42 @@ import {
 
 import { toast } from "react-toastify";
 
+type FormDataType = {
+  categoryName: string;
+  slug: string;
+};
+
+type ErrorType = {
+  categoryName: string;
+};
+
 export default function EditCategory() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-const [formData, setFormData] = useState<{
-  categoryName: string;
-  slug: string;
-}>({
-  categoryName: "",
-  slug: "",
-});
-  const [errors, setErrors] = useState({
+  const [formData, setFormData] = useState<FormDataType>({
+    categoryName: "",
+    slug: "",
+  });
+
+  const [errors, setErrors] = useState<ErrorType>({
     categoryName: "",
   });
 
-useEffect(() => {
-  fetchCategory();
-}, [id]);
+  useEffect(() => {
+    fetchCategory();
+  }, [id]);
 
   const fetchCategory = async () => {
     try {
+      if (!id) return;
+
       const response = await getCategoryByIdApi(id);
 
       if (response.data.success) {
         setFormData({
-          categoryName: response.data.data.categoryName,
-          slug: response.data.data.slug,
+          categoryName: response.data.data.categoryName || "",
+          slug: response.data.data.slug || "",
         });
       }
     } catch (error) {
@@ -45,7 +54,7 @@ useEffect(() => {
     }
   };
 
-const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     if (name === "categoryName") {
@@ -58,7 +67,6 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       });
 
       setErrors({
-        ...errors,
         categoryName: "",
       });
     } else {
@@ -69,10 +77,12 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
   };
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-let newErrors: { categoryName?: string } = {};
+    const newErrors: ErrorType = {
+      categoryName: "",
+    };
 
     if (!formData.categoryName.trim()) {
       newErrors.categoryName = "Category Name is required";
@@ -80,11 +90,11 @@ let newErrors: { categoryName?: string } = {};
 
     setErrors(newErrors);
 
-    if (Object.keys(newErrors).length > 0) {
-      return;
-    }
+    if (newErrors.categoryName) return;
 
     try {
+      if (!id) return;
+
       const response = await updateCategoryApi(id, formData);
 
       if (response.data.success) {
@@ -94,7 +104,7 @@ let newErrors: { categoryName?: string } = {};
           navigate("/blog-catogery");
         }, 1000);
       }
-    } catch (error) {
+    } catch (error: any) {
       toast.error(
         error.response?.data?.message || "Something went wrong"
       );
@@ -154,23 +164,23 @@ let newErrors: { categoryName?: string } = {};
                     />
                   </div>
 
-                  {/* Button */}
-                 <div className="flex gap-3">
-  <button
-    type="button"
-    onClick={() => navigate("/blog-catogery")}
-    className="rounded-lg border border-gray-300 px-4 py-3 text-gray-700 hover:bg-gray-100"
-  >
-    Back
-  </button>
+                  {/* Buttons */}
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => navigate("/blog-catogery")}
+                      className="rounded-lg border border-gray-300 px-4 py-3 text-gray-700 hover:bg-gray-100"
+                    >
+                      Back
+                    </button>
 
-  <button
-    type="submit"
-    className="rounded-lg bg-brand-500 px-4 py-3 text-white hover:bg-brand-600"
-  >
-    Update Category
-  </button>
-</div>
+                    <button
+                      type="submit"
+                      className="rounded-lg bg-brand-500 px-4 py-3 text-white hover:bg-brand-600"
+                    >
+                      Update Category
+                    </button>
+                  </div>
 
                 </div>
               </form>
