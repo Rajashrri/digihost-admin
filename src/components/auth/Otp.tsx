@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { verifyOtp } from "../../api/authApi";
 import { ChevronLeftIcon } from "../../icons";
@@ -59,10 +59,9 @@ export default function Otp() {
 
       toast.success(res.data.message || "OTP verified successfully");
 
-      localStorage.setItem("token", res.data.accessToken);
-      localStorage.setItem("refreshToken", res.data.refreshToken);
-
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+    localStorage.setItem("accessToken", res.data.accessToken);
+localStorage.setItem("refreshToken", res.data.refreshToken);
+localStorage.setItem("user", JSON.stringify(res.data.user));
 
       navigate("/");
     } catch (err: any) {

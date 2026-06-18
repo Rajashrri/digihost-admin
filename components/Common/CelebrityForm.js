@@ -396,7 +396,7 @@ const CelebrityForm = ({ mode = "add", celebrityId = null, initialData = null })
                           <img
                             src={
                               formData.previewImage ||
-                              `${process.env.REACT_APP_API_BASE_URL}/celebraty/${formData.old_image}`
+                              `${process.env.VITE_API_BASE_URL}/celebraty/${formData.old_image}`
                             }
                             alt="Preview"
                             width="100"
@@ -465,7 +465,7 @@ const CelebrityForm = ({ mode = "add", celebrityId = null, initialData = null })
                               style={{ width: 100, height: 100 }}
                             >
                               <img
-                                src={`${process.env.REACT_APP_API_BASE_URL}/celebraty/${file}`}
+                                src={`${process.env.VITE_API_BASE_URL}/celebraty/${file}`}
                                 alt={`gallery-${idx}`}
                                 style={{
                                   width: "100%",

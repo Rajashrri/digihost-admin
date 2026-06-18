@@ -33,6 +33,7 @@ import EditBlog from "./pages/Blog/EditBlog";
 import SeoBlog from "./pages/Blog/SeoBlog";
 import Contact from "./pages/List/contact";
 
+import AuthGuard from "./components/AuthGuard";
 
 
 
@@ -43,7 +44,13 @@ export default function App() {
         <ScrollToTop />
         <Routes>
           {/* Dashboard Layout */}
-          <Route element={<AppLayout />}>
+          <Route
+  element={
+    <AuthGuard>
+      <AppLayout />
+    </AuthGuard>
+  }
+>
             <Route index path="/" element={<Home />} />
 
             {/* Others Page */}
