@@ -32,7 +32,7 @@ import EditBlog from "./pages/Blog/EditBlog";
 
 import SeoBlog from "./pages/Blog/SeoBlog";
 import Contact from "./pages/List/contact";
-import Career from "./pages/List/Career";
+import Career from "./pages/List/career";
 
 import AuthGuard from "./components/AuthGuard";
 
