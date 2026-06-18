@@ -37,7 +37,7 @@ const RichTextEditor = ({
     isInitializing.current = true;
 
     const BASE_URL =
-      process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+      process.env.VITE_API_BASE_URL || "http://localhost:5000";
 
     // ✅ Add small delay to ensure DOM is ready
     const timer = setTimeout(() => {

@@ -38,7 +38,7 @@ const ProfileMenu = () => {
 
     if (adminId) {
       fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/api/auth/getdataByid/${adminId}`
+        `${process.env.VITE_API_BASE_URL}/api/auth/getdataByid/${adminId}`
       )
         .then((response) => response.json())
         .then((data) => {
@@ -66,7 +66,7 @@ const ProfileMenu = () => {
       >
         <img
           className="rounded-circle header-profile-user me-1"
-           src={`${process.env.REACT_APP_API_BASE_URL}/profile/${adminName2}`}
+           src={`${process.env.VITE_API_BASE_URL}/profile/${adminName2}`}
 
           alt="Header Avatar"
         />

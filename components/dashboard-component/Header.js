@@ -167,7 +167,7 @@ const Header = (props) => {
                                 ) : (
                                     <img 
                                         className="rounded-circle" 
-                                        src={ `${process.env.REACT_APP_API_BASE_URL}/profile/${user.profilePic}`} 
+                                        src={ `${process.env.VITE_API_BASE_URL}/profile/${user.profilePic}`} 
                                         alt="Profile"
                                         style={{
                                             width: "36px",
