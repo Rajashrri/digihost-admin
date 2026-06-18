@@ -170,7 +170,7 @@ export default function CareerList() {
 
                         <TableCell className="px-5 py-4 text-start">
                           <a
-                            href={`http://localhost:8000/${item.resume.replace(
+                            href={`${item.resume.replace(
                               /\\/g,
                               "/"
                             )}`}
