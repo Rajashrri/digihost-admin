@@ -65,3 +65,7 @@ export const contactApi = (data) => {
 export const getContactsApi = () => {
   return frontApi.get(`/contacts`);
 };
+
+export const getCareersApi = () => {
+  return frontApi.get(`/careers`);
+};

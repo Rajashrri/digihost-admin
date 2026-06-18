@@ -32,6 +32,7 @@ import EditBlog from "./pages/Blog/EditBlog";
 
 import SeoBlog from "./pages/Blog/SeoBlog";
 import Contact from "./pages/List/contact";
+import Career from "./pages/List/Career";
 
 import AuthGuard from "./components/AuthGuard";
 
@@ -81,6 +82,8 @@ export default function App() {
 />
 
             <Route path="/contact-list" element={<Contact />} />
+                        <Route path="/career-list" element={<Career />} />
+
 
             {/* Ui Elements */}
             <Route path="/alerts" element={<Alerts />} />
