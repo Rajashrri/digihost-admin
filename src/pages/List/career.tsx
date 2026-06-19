@@ -20,6 +20,7 @@ interface Career {
   experience: string;
   location: string;
   coverLetter: string;
+  position : string;
   resume: string;
   createdAt: string;
 }
@@ -100,7 +101,12 @@ export default function CareerList() {
                     >
                       Location
                     </TableCell>
-
+ <TableCell
+                      isHeader
+                      className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs"
+                    >
+                      Position
+                    </TableCell>
                     <TableCell
                       isHeader
                       className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs"
@@ -158,6 +164,9 @@ export default function CareerList() {
 
                         <TableCell className="px-5 py-4 text-start">
                           {item.location}
+                        </TableCell>
+      <TableCell className="px-5 py-4 text-start">
+                          {item.position}
                         </TableCell>
 
                         <TableCell className="px-5 py-4 text-start">
