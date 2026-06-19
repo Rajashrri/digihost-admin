@@ -2,7 +2,7 @@ import type React from "react";
 import type { FC } from "react";
 
 interface InputProps {
-  type?: "text" | "number" | "email" | "password" | "date" | "time" | string;
+  type?: "text" | "number" | "email" | "password" | "date" | "time" | "file" | string;
   id?: string;
   name?: string;
   placeholder?: string;
@@ -16,6 +16,7 @@ interface InputProps {
   success?: boolean;
   error?: boolean;
   hint?: string;
+  accept?: string;
 }
 
 const Input: FC<InputProps> = ({
@@ -25,6 +26,7 @@ const Input: FC<InputProps> = ({
   placeholder,
   value,
   onChange,
+   accept,
   className = "",
   min,
   max,
@@ -48,19 +50,20 @@ const Input: FC<InputProps> = ({
 
   return (
     <div className="relative">
-      <input
-        type={type}
-        id={id}
-        name={name}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        min={min}
-        max={max}
-        step={step}
-        disabled={disabled}
-        className={inputClasses}
-      />
+    <input
+  type={type}
+  id={id}
+  name={name}
+  placeholder={placeholder}
+  value={value}
+  onChange={onChange}
+  min={min}
+  max={max}
+  step={step}
+  accept={accept}
+  disabled={disabled}
+  className={inputClasses}
+/>
 
       {hint && (
         <p
