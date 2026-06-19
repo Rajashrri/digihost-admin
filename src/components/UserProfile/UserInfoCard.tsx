@@ -164,7 +164,12 @@ const handleSave = async () => {
                     <Input
   type="text"
   value={profile.email}
-  
+  onChange={(e) =>
+    setProfile({
+      ...profile,
+      email: e.target.value,
+    })
+  }
 />
                   </div>
 
