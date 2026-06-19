@@ -140,6 +140,14 @@ export default function SignInForm() {
               )}
             </div>
 
+<div className="flex justify-end mt-2">
+  <Link
+    to="/forget-password"
+    className="text-sm text-brand-500 hover:underline"
+  >
+    Forgot Password?
+  </Link>
+</div>
             <Button className="w-full" disabled={loading}>
               {loading ? "Logging in..." : "Sign In"}
             </Button>

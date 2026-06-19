@@ -19,4 +19,14 @@ export const verifyOtp = (data) => {
   return API.post("/verify-otp", data);
 };
 
+// FORGOT PASSWORD
+export const forgotPassword = (data) => {
+  return API.post("/forgot-password", data);
+};
+
+// RESET PASSWORD
+export const resetPassword = (data) => {
+  return API.post("/reset-password", data);
+};
+
 export default API;
