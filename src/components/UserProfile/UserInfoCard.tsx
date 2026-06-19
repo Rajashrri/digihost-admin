@@ -43,6 +43,8 @@ const handleSave = async () => {
   try {
     const res = await updateProfile({
       name: profile.name,
+      email: profile.email,
+      phone: profile.phone,
     });
 
     toast.success(

@@ -24,6 +24,8 @@ export const updateProfile = async (profileData) => {
   const formData = new FormData();
 
   formData.append("name", profileData.name);
+  formData.append("phone", profileData.phone);
+  formData.append("email", profileData.email);
 
   if (profileData.pic) {
     formData.append("pic", profileData.pic);
