@@ -34,8 +34,7 @@ const [selectedFile, setSelectedFile] = useState(null);
       console.log(error);
     }
   };
-const handleSave = async (e) => {
-  e.preventDefault();
+const handleSave = async () => {
 
   if (!profile.name.trim()) {
     toast.error("Name is required");
