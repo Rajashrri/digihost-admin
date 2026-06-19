@@ -7,33 +7,35 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { getProfile, updateProfile } from "../../api/profileApi";
 export default function UserInfoCard() {
-
   const [profile, setProfile] = useState({
-  name: "",
-  email: "",
-  phone: "",
-});
+    name: "",
+    email: "",
+    phone: "",
+    profilePic: "",
+  });
 
-useEffect(() => {
-  loadProfile();
-}, []);
+  useEffect(() => {
+    loadProfile();
+  }, []);
+const [selectedFile, setSelectedFile] = useState(null);
+  const loadProfile = async () => {
+    try {
+      const res = await getProfile();
 
-const loadProfile = async () => {
-  try {
-    const res = await getProfile();
+      const user = res.user;
 
-    const user = res.user;
-
-    setProfile({
-      name: user?.name?.split(" ")[0] || "",
-      email: user?.email || "",
-      phone: user?.phone || "",
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-const handleSave = async () => {
+      setProfile({
+        name: user?.name?.split(" ")[0] || "",
+        email: user?.email || "",
+        phone: user?.phone || "",
+        profilePic: user?.profilePic || "",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+const handleSave = async (e) => {
+  e.preventDefault();
 
   if (!profile.name.trim()) {
     toast.error("Name is required");
@@ -45,15 +47,13 @@ const handleSave = async () => {
       name: profile.name,
       email: profile.email,
       phone: profile.phone,
+      pic: selectedFile,
     });
 
-    toast.success(
-      res.msg || "Profile updated successfully"
-    );
+    toast.success(res.msg || "Profile updated successfully");
 
     closeModal();
     loadProfile();
-
   } catch (error) {
     toast.error(
       error?.response?.data?.msg ||
@@ -62,7 +62,7 @@ const handleSave = async () => {
   }
 };
   const { isOpen, openModal, closeModal } = useModal();
- 
+
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -76,31 +76,28 @@ const handleSave = async () => {
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 First Name
               </p>
-             <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-  {profile.name}
-</p>
+              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                {profile.name}
+              </p>
             </div>
-
-           
 
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Email address
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-  {profile.email}
-</p>
+                {profile.email}
+              </p>
             </div>
 
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Phone
               </p>
-             <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-  {profile.phone}
-</p>
+              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                {profile.phone}
+              </p>
             </div>
-
           </div>
         </div>
 
@@ -139,7 +136,6 @@ const handleSave = async () => {
           </div>
           <form className="flex flex-col">
             <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
-             
               <div className="mt-7">
                 <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                   Personal Information
@@ -148,48 +144,63 @@ const handleSave = async () => {
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-1">
                     <Label>First Name</Label>
-<Input
-  type="text"
-  value={profile.name}
-  onChange={(e) =>
-    setProfile({
-      ...profile,
-      name: e.target.value,
-    })
-  }
-/>                  </div>
-
-                 
+                    <Input
+                      type="text"
+                      value={profile.name}
+                      onChange={(e) =>
+                        setProfile({
+                          ...profile,
+                          name: e.target.value,
+                        })
+                      }
+                    />{" "}
+                  </div>
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Email Address</Label>
                     <Input
-  type="text"
-  value={profile.email}
-  onChange={(e) =>
-    setProfile({
-      ...profile,
-      email: e.target.value,
-    })
-  }
-/>
+                      type="text"
+                      value={profile.email}
+                      onChange={(e) =>
+                        setProfile({
+                          ...profile,
+                          email: e.target.value,
+                        })
+                      }
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Phone</Label>
-                   <Input
-  type="text"
-  value={profile.phone}
-  onChange={(e) =>
-    setProfile({
-      ...profile,
-      phone: e.target.value,
-    })
-  }
-/>
+                    <Input
+                      type="text"
+                      value={profile.phone}
+                      onChange={(e) =>
+                        setProfile({
+                          ...profile,
+                          phone: e.target.value,
+                        })
+                      }
+                    />
                   </div>
 
-                 
+                  <div className="col-span-2">
+                    <Label>Profile Picture</Label>
+
+                    {profile.profilePic && (
+                      <img
+                        src={`${import.meta.env.VITE_API_BASE_URL}/profile/${profile.profilePic}`}
+                        alt="Profile"
+                        className="w-20 h-20 rounded-full mb-3 object-cover"
+                      />
+                    )}
+
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setSelectedFile(e.target.files[0])}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

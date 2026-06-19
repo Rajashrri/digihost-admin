@@ -19,7 +19,6 @@ export const getProfile = async () => {
   const { data } = await API.get("/getprofile");
   return data;
 };
-
 export const updateProfile = async (profileData) => {
   const formData = new FormData();
 
@@ -31,15 +30,11 @@ export const updateProfile = async (profileData) => {
     formData.append("pic", profileData.pic);
   }
 
-  const { data } = await API.put(
-    "/update",
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
-  );
+  const { data } = await API.put("/update", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
   return data;
 };
