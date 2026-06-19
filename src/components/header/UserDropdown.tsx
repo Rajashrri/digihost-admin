@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getProfile } from "../../api/profileApi";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { Link } from "react-router";
@@ -6,16 +7,38 @@ import { useNavigate } from "react-router-dom";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const [profile, setProfile] = useState({
+    name: "",
+    email: "",
+    profilePic: "",
+  });
 
-const navigate = useNavigate();
+  useEffect(() => {
+    loadProfile();
+  }, []);
 
-const handleLogout = () => {
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
-  localStorage.removeItem("user");
+  const loadProfile = async () => {
+    try {
+      const res = await getProfile();
 
-  navigate("/signin", { replace: true });
-};
+      setProfile({
+        name: res.user?.name || "",
+        email: res.user?.email || "",
+        profilePic: res.user?.profilePic || "",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+
+    navigate("/signin", { replace: true });
+  };
   function toggleDropdown() {
     setIsOpen(!isOpen);
   }
@@ -30,10 +53,19 @@ const handleLogout = () => {
         className="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400"
       >
         <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-          <img src="/images/user/owner.jpg" alt="User" />
+          <img
+            src={
+              profile.profilePic
+                ? `${import.meta.env.VITE_API_BASE_URL}/profile/${profile.profilePic}`
+                : "/images/user/owner.jpg"
+            }
+            alt={profile.name}
+            className="w-full h-full object-cover"
+          />{" "}
         </span>
-
-        <span className="block mr-1 font-medium text-theme-sm">Musharof</span>
+        <span className="block mr-1 font-medium text-theme-sm">
+          {profile.name}
+        </span>{" "}
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
@@ -61,10 +93,11 @@ const handleLogout = () => {
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            Musharof Chowdhury
+            {profile.name}
           </span>
+
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            randomuser@pimjo.com
+            {profile.email}
           </span>
         </div>
 
@@ -145,10 +178,10 @@ const handleLogout = () => {
             </DropdownItem>
           </li>
         </ul>
-      <button
-  onClick={handleLogout}
-  className="flex w-full items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100"
->
+        <button
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100"
+        >
           <svg
             className="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300"
             width="24"
