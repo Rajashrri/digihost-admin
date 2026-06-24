@@ -210,15 +210,14 @@ export default function EditBlog() {
                     <label className="mb-1.5 block text-sm font-medium">
                       Main Image
                     </label>
-
                     {oldMainImage && (
                       <img
-                        src={`${import.meta.env.VITE_API_BASE_URL}/blog/${oldMainImage}`}
+                        src={oldMainImage}
+                        alt="Main"
                         width="120"
                         className="mb-3 rounded"
                       />
                     )}
-
                     <input
                       type="file"
                       accept="image/*"
@@ -230,15 +229,14 @@ export default function EditBlog() {
                     <label className="mb-1.5 block text-sm font-medium">
                       Featured Image
                     </label>
-
                     {oldFeaturedImage && (
                       <img
-                        src={`${import.meta.env.VITE_API_BASE_URL}/blog/${oldFeaturedImage}`}
+                        src={oldFeaturedImage}
+                        alt="Featured"
                         width="120"
                         className="mb-3 rounded"
                       />
                     )}
-
                     <input
                       type="file"
                       accept="image/*"

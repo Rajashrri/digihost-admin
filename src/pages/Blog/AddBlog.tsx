@@ -42,34 +42,25 @@ export default function AddBlog() {
     }
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
-    const { name, value } = e.target;
+const handleChange = (e) => {
+  const { name, value } = e.target;
 
-    if (name === "title") {
-      setFormData({
-        ...formData,
-        title: value,
-        slug: value
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^\w-]+/g, ""),
-      });
-
-      setErrors({
-        ...errors,
-        title: "",
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
-  };
+  if (name === "title") {
+    setFormData((prev) => ({
+      ...prev,
+      title: value,
+      slug: value
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]+/g, ""),
+    }));
+  } else {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -343,14 +334,16 @@ export default function AddBlog() {
                     <label className="mb-1.5 block text-sm font-medium">
                       Description
                     </label>
-                    <RichTextEditor
-                      value={formData.description}
-                      onChange={(val) =>
-                        setFormData({ ...formData, description: val })
-                      }
-                      height={400}
-                    />
-
+                <RichTextEditor
+  value={formData.description}
+  onChange={(val) =>
+    setFormData((prev) => ({
+      ...prev,
+      description: val,
+    }))
+  }
+  height={400}
+/>
                     {errors.description && (
                       <p className="mt-1 text-sm text-red-500">
                         {errors.description}
